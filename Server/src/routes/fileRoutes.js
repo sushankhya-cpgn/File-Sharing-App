@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const path = require('path')
 const { uploadfile, downloadfile, listfiles } = require('../controller/fileController');
  
 const router = express.Router();
@@ -9,7 +10,9 @@ const router = express.Router();
 const storage = multer.diskStorage({
     destination:'./uploads',
     filename: function(req,file,cb){
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        const extension = file.originalname.split('.')[1]
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9) + '.' + extension
+
         cb(null,file.filename+'-'+uniqueSuffix)
     }
 });

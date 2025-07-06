@@ -3,8 +3,10 @@ const app = express();
 const cors = require('cors');
 const fileRoutes = require('./routes/fileRoutes');
 
+
 app.use(express.json());
-app.use('api/files',fileRoutes);
+app.use(express.static('./uploads'))
+// app.use('/api/files',fileRoutes);
 
 
 
