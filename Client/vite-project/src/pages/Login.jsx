@@ -2,24 +2,9 @@ import React, { useState } from "react";
 import Button from "../components/Button";
 import loginBg from "../assets/login_bg.jpg";
 import axios from 'axios'
-
+import ButtonGroup from "../components/ButtonGroup";
 
 const URL = 'http://localhost:8000/api/auth';
-
-// LoginFields={
-//     email,
-//     password
-// }
-
-// SignupField={
-
-//     name,
-//     email,
-//     createPassword,
-//     confirmPassword,
-
-
-// }
 
 
 const Logo = () => {
@@ -32,62 +17,44 @@ const Card = (props) => {
 
   return (
     <div className="w-full max-w-xl bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+
+{/* {!props.cross && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+  <strong className="font-bold">Warning</strong>
+  <span className="block sm:inline"> Enter Email before login</span>
+  <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+    <svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" onClick={props.setCross(true)}><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+  </span>
+</div>} */}
       <Logo />
       <div className="p-4">
         <h1 className="text-2xl flex justify-center mb-2 mt-2 text-gray-800">Welcome</h1>
 
         <div className="flex justify-center items-center space-x-4 mb-4">
-          <Button
-            bgColor="bg-indigo-600"
-            hoverBg="bg-indigo-700"
-            textColor="text-white"
-            rounded="rounded-2xl"
-            text="Login"
-            onClick = {()=>props.setLogin(true)}
-          />
-          <Button
-            bgColor="bg-emerald-500"
-            hoverBg="bg-emerald-600"
-            textColor="text-white"
-            rounded="rounded-2xl"
-            text="SignUp"
-            onClick= {()=>props.setLogin(false)}
-          />
+
+
+          <ButtonGroup items={["login","signup"] } togglelogin={props.setLogin} />
+          
         </div>
 
         <form className="flex flex-col space-y-4">
-          {props.login?
-          <>
+        
           <input
             type="email"
             placeholder="Email"
             className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            onChange={(e)=>props.setUserName(e.target.value)}
-          />
+            onChange={(e)=>props.setUserName(e.target.value)}></input>
+         
           <input
             type="password"
             placeholder="Password"
             className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            onChange={(e)=>props.setPassword(e.target.value)}
-          /> </>:
-          <>
-          <input
-            type="email"
-            placeholder="Email"
-            className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-          />
-          <input
-            type="password"
-            placeholder="Create Password"
-            className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400"></input>
-              <input
+            onChange={(e)=>props.setPassword(e.target.value)}></input>
+          
+          {!props.login && <input
             type="password"
             placeholder="Confirm Password"
             className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-          />
-        
-            </>
-          }
+            onChange={(e)=>props.setConfirmPassword(e.target.value)}></input>}
           <Button
             bgColor="bg-indigo-600"
             hoverBg="bg-indigo-700"
@@ -110,6 +77,8 @@ const Login = () => {
   const[login,setLogin] = useState(true);
   const[userName,setUserName] = useState("");
   const [password,setPassword] = useState("");
+  const [confirmPassword,setConfirmPassword] = useState("");
+  const [cross,setCross] = useState(false);
 
   const onLogin = async()=>{
 
@@ -132,6 +101,8 @@ const Login = () => {
       }
     
     );
+    console.log(response.data);
+    
    }
 
    catch(err) {
@@ -142,6 +113,21 @@ const Login = () => {
    
   const onSignup = async()=>{
 
+    if(password!==confirmPassword){
+      alert("no")
+      return
+    }
+    const res = await axios.post(URL+'/signup',{
+      email:userName,
+      password:password
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+      console.log(res)
   }
    
   return (
@@ -153,9 +139,18 @@ const Login = () => {
       setUserName={setUserName} 
       password={password} 
       setPassword={setPassword} 
+      setConfirmPassword = {setConfirmPassword}
       onLogin={onLogin}
-      onSignup={onSignup}/>
+      onSignup={onSignup}
+      setCross = {setCross}
+      cross={cross}/>
+     
+
+
+
+
     </div>
+
   );
 };
 
