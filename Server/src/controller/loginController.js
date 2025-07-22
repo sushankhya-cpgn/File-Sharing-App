@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 
 exports.loginController = async(req,res) =>{
     try{
+
         const {email,password} = req.body;
         const user = await prisma.user.findUnique({where:{email}});
         if(!user){
@@ -14,7 +15,9 @@ exports.loginController = async(req,res) =>{
     
         if(result){
             const token =  jwt.sign({userId:user.id,email:user.email},process.env.SECRET_KEY,{expiresIn:'1d'});
-            res.status(200).json({message:"Login successfull",token})
+            res.cookie("token",token);
+            res.status(200).json({message:"Login successfull",token});
+            
         }
         if(!result){
         res.status(401).json({error:"Invalid Password"});

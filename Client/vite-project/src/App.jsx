@@ -11,7 +11,7 @@ import "./App.css"
 function App(){
 const router = createBrowserRouter([
   {
-    path:'/transfer',
+    path:'/',
     element:<TransferReceiverPage/>
   },
   {

@@ -1,16 +1,50 @@
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import useSocket from '../hooks/useSocket';
 import useFileSender from '../hooks/useFileSender';
 import useReceiver from '../hooks/useFileReceiver';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const  TransferReceiverPage = () =>{
+const TransferReceiverPage = () =>{
     const[myId,setMyId] = useState('');
     const[myName,setMyName] = useState('');
     const [targetId,setTargetId] = useState('')
     const {peers,registerPeer,socket} = useSocket('http://localhost:8000')
     const {handleFile} = useFileSender(targetId,socket)
+    const navigate = useNavigate();
     useReceiver(socket); 
+    const URL = 'http://localhost:8000/api/user';
+
+
+    useEffect(()=>{
+      
+      const fetchData = async()=>{
+        try{
+          const user= await axios.get(
+            URL+'/',{
+              headers:{
+                'Content-Type':'application/json'
+              },
+              withCredentials:true
+            }
+          )
+          console.log(user);
+          setMyName(user?.data.message.email.split('@')[0]);
+          setMyId(user?.data.message.id)
+          handleRegister();
+        }
+
+        catch(err){
+          navigate('/login')
+        }
+       
+       
+      }
+
+      fetchData();
+      
+    },[])
   
     const handleRegister = ()=>{
       if(myId && myName){
@@ -24,17 +58,8 @@ const  TransferReceiverPage = () =>{
       <div style={{ padding: 20 }}>
         <h2>📡 Peer-to-Peer File Share</h2>
         <div>
-          <input
-            placeholder="Your ID"
-            value={myId}
-            onChange={(e) => setMyId(e.target.value)}
-          />
-          <input
-            placeholder="Your Name"
-            value={myName}
-            onChange={(e) => setMyName(e.target.value)}
-          />
-          <button onClick={handleRegister}>Register</button>
+        <p>{myId}</p>  
+        <p>{myName}</p>
         </div>
   
         <h4> Peers online:</h4>
