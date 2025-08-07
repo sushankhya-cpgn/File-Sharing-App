@@ -16,9 +16,9 @@ function useFileSender(targetId,socket){
     
         const reader = new FileReader();
     
-        reader.addEventListener("load",(e)=>{
+        reader.addEventListener("load",async(e)=>{
           socket.current.emit('send-chunk-to-peer',({targetId,chunk:e.target.result}));
-    
+          await waitForAck(offset);
           offset+= e.target.result.byteLength;
     
           if(offset<file.size){

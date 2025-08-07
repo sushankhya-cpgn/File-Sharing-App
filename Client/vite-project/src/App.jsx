@@ -15,7 +15,7 @@ const router = createBrowserRouter([
     element:<TransferReceiverPage/>
   },
   {
-    path:'/login',
+    path:'/login', 
     element:<Login/>
   }
   ,

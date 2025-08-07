@@ -29,28 +29,35 @@ const TransferReceiverPage = () =>{
               withCredentials:true
             }
           )
-          console.log(user);
+          
           setMyName(user?.data.message.email.split('@')[0]);
           setMyId(user?.data.message.id)
-          handleRegister();
+          if(myId){
+            handleRegister()
+          }
+          console.log("Hi")
         }
 
         catch(err){
           navigate('/login')
         }
+
        
        
       }
 
       fetchData();
       
-    },[])
+    },[myId])
   
     const handleRegister = ()=>{
+      console.log(myId); // Blamk value
+      console.log("aaa")
       if(myId && myName){
         registerPeer(myId,myName);
         socket.current.emit('register',{peerId:myId,name:myName});
         console.log("Someone registerd")
+
       }
     };
   
@@ -62,17 +69,22 @@ const TransferReceiverPage = () =>{
         <p>{myName}</p>
         </div>
   
-        <h4> Peers online:</h4>
-        <select onChange={(e) => setTargetId(e.target.value)} value={targetId}>
-          <option value="">Select a peer</option>
-          {Object.entries(peers).map(([peerId, peer]) =>
-            peerId !== myId ? (
-              <option key={peerId} value={peerId}>
-                {peer.name} ({peerId})
-              </option>
-            ) : null
-          )}
-        </select>
+        {myId && (
+  <>
+    <h4> Peers online:</h4>
+    <select onChange={(e) => setTargetId(e.target.value)} value={targetId}>
+      <option value="">Select a peer</option>
+      {Object.entries(peers).map(([peerId, peer]) =>
+        peerId !== myId ? (
+          <option key={peerId} value={peerId}>
+            {peer.name} ({peerId})
+          </option>
+        ) : null
+      )}
+    </select>
+  </>
+)}
+
   
         <div style={{ marginTop: 20 }}>
           <input type="file" onChange={handleFile} />

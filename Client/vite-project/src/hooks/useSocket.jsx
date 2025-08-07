@@ -19,6 +19,7 @@ function useSocket(SOCKET_URL){
       },[SOCKET_URL]);
 
       const registerPeer = (id,name)=>{
+        console.log(id,name)
         if(id && name){
             socketRef.current.emit('register',{peerId:id,name:name});
           }
